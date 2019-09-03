@@ -1,4 +1,5 @@
 import React from 'react';
+import './Dropdown.scss';
 
 const ArrayTypes = ['Random', 'Almost Sorted', 'Reversed'];
 const TypeOptions = ArrayTypes.map(type => (

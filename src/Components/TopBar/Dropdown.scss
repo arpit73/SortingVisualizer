@@ -1,0 +1,15 @@
+select {
+    background-color: #0563af;
+    color: white;
+    border: none;
+    font-size: 1em;
+    margin: 2rem;
+    -webkit-appearance: button;
+    appearance: button;
+    outline: none;
+    cursor: pointer;
+
+    option {
+        background-color: #0563af;
+    }
+}

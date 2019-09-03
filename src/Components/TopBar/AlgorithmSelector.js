@@ -1,16 +1,22 @@
 import React from 'react';
-
-const SortingAlgorithms = ['Bubble Sort', 'Quick Sort'];
+import './Dropdown.scss';
+import { SortingAlgorithms } from './SortingAlgorithms';
 
 const SortingOptions = SortingAlgorithms.map(algo => (
-    <option value={algo}>{algo}</option>
+    <option value={algo.name}>{algo.name}</option>
 ));
 
 const AlgorithmSelector = props => {
+    const sendAlgorithm = value => {
+        const Algorithm = SortingAlgorithms.find(
+            Algorithm => Algorithm.name === value
+        );
+        props.onChangeHandler(Algorithm);
+    };
     return (
         <select
             name="AlgorithmSelector"
-            onChange={e => props.onChangeHandler(e.target.value)}
+            onChange={e => sendAlgorithm(e.target.value)}
         >
             {SortingOptions}
         </select>

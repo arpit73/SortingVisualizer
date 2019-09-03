@@ -1,8 +1,9 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 import ArraySizeSelector from './Components/TopBar/ArraySizeSelector';
 import AlgorithmSelector from './Components/TopBar/AlgorithmSelector';
 import ArrayTypeSelector from './Components/TopBar/ArrayTypeSelector';
+import { BubbleSort } from './Components/TopBar/SortingAlgorithms';
 
 class Strip {
     constructor(length = 10, color = 'rgb(25, 125, 51)') {
@@ -15,9 +16,9 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            arraySize: 10,
+            arraySize: 50,
             stripsArray: [],
-            sortingAlgorithm: 'Bubble Sort',
+            sortingAlgorithm: BubbleSort,
             arrayType: 'Random'
         };
     }
@@ -31,13 +32,6 @@ class App extends React.Component {
                 this.surfaceHeight
             )
         });
-    };
-
-    getColor = () => {
-        let red = Math.ceil(Math.random() * 250);
-        let green = Math.ceil(Math.random() * 250);
-        let blue = Math.ceil(Math.random() * 250);
-        return `rgb(${red}, ${green}, ${blue})`;
     };
 
     generateStripsArray = (arraySize, arrayType, maxValue) => {
@@ -71,73 +65,53 @@ class App extends React.Component {
                 break;
         }
 
-        let max = Math.max(...stripLengthArray);
-        let min = Math.min(...stripLengthArray);
-        min += 50;
-        let scaleFactor = (max - min) / 220;
+        // let scaleFactor = maxValue / 10;
 
         let strips = stripLengthArray.map(length => {
-            let scaledLength = length - min,
-                red = 0,
-                green = 255 - Math.floor(scaledLength / scaleFactor),
-                blue = 0;
-            let color = `rgb(${red}, ${green}, ${blue})`;
+            // let hue = 0,
+            //     saturation = 100,
+            //     luminosity = length / scaleFactor + 90;
+            // let color = `hsl(${hue}, ${saturation}%, ${luminosity}%)`;
+            let color = 'white';
             return new Strip(length, color);
         });
 
         return strips;
     };
 
-    sleep(ms) {
+    sleep(ms = 0) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    uuidv4() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+            var r = (Math.random() * 16) | 0,
+                v = c === 'x' ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+        });
     }
 
     swap = async (arr, i, j) => {
         [arr[i], arr[j]] = [arr[j], arr[i]];
 
-        await this.sleep(5);
+        await this.sleep();
         this.setState({
             stripsArray: arr
         });
     };
 
-    bubbleSort = async arr => {
-        let len = arr.length;
-        for (let i = len - 1; i >= 0; i--) {
-            for (let j = 1; j <= i; j++) {
-                let backup_1 = arr[j - 1].color;
-                let backup_2 = arr[j].color;
-
-                arr[j - 1].color = 'rgb(2, 12, 51)';
-                arr[j].color = 'rgb(225, 125, 51)';
-                if (arr[j - 1].length > arr[j].length) {
-                    await this.swap(arr, j - 1, j);
-                }
-                arr[j - 1].color = backup_1;
-                arr[j].color = backup_2;
-            }
-        }
-    };
-
-    Strips = () => {
-        return this.state.stripsArray.map(strip => {
-            const stripStyles = {
-                height: `${strip.length}px`,
-                backgroundColor: strip.color
-            };
-            return (
-                <span
-                    key={Math.ceil(Math.random() * 200000)}
-                    className="strip"
-                    style={stripStyles}
-                ></span>
-            );
-        });
+    runSort = (array, swapMethod) => {
+        this.state.sortingAlgorithm.method(array, swapMethod);
     };
 
     handleArraySizeSelector = arraySize => {
         this.setState({
-            arraySize: arraySize
+            arraySize: arraySize,
+            stripsArray: this.generateStripsArray(
+                arraySize,
+                this.state.arrayType,
+                this.surfaceHeight
+            )
         });
     };
 
@@ -149,37 +123,65 @@ class App extends React.Component {
 
     handleArrayTypeSelector = arrayType => {
         this.setState({
-            arrayType: arrayType
+            arrayType: arrayType,
+            stripsArray: this.generateStripsArray(
+                this.state.arraySize,
+                arrayType,
+                this.surfaceHeight
+            )
         });
     };
 
     TopBar = () => {
         return (
             <span>
+                <AlgorithmSelector
+                    onChangeHandler={this.handleAlgorithmSelector}
+                />
+
                 <ArraySizeSelector
                     min={10}
-                    max={200}
+                    max={1000}
                     step={5}
                     defaultValue={this.state.arraySize}
                     onChangeHandler={this.handleArraySizeSelector}
                 />
 
-                <AlgorithmSelector
-                    onChangeHandler={this.handleAlgorithmSelector}
-                />
-
                 <ArrayTypeSelector
                     onChangeHandler={this.handleArrayTypeSelector}
                 />
+
+                <button
+                    onClick={() =>
+                        this.runSort(this.state.stripsArray, this.swap)
+                    }
+                >
+                    Sort
+                </button>
             </span>
         );
+    };
+
+    Strips = () => {
+        return this.state.stripsArray.map(strip => {
+            const stripStyles = {
+                height: `${strip.length}px`,
+                backgroundColor: strip.color
+            };
+            return (
+                <span
+                    key={this.uuidv4()}
+                    className="strip"
+                    style={stripStyles}
+                ></span>
+            );
+        });
     };
 
     render() {
         const surfaceStyles = {
             width: '80%',
-            height: `${this.surfaceHeight}px`,
-            backgroundColor: 'white'
+            height: `${this.surfaceHeight}px`
         };
 
         return (
@@ -188,9 +190,6 @@ class App extends React.Component {
                 <span className="surface" ref="surface" style={surfaceStyles}>
                     <this.Strips />
                 </span>
-                <button onClick={() => this.bubbleSort(this.state.stripsArray)}>
-                    Sort
-                </button>
             </div>
         );
     }
