@@ -1,9 +1,9 @@
 import React from 'react';
 import './App.scss';
-import ArraySizeSelector from './Components/TopBar/ArraySizeSelector';
-import AlgorithmSelector from './Components/TopBar/AlgorithmSelector';
-import ArrayTypeSelector from './Components/TopBar/ArrayTypeSelector';
-import { BubbleSort } from './Components/TopBar/SortingAlgorithms';
+import ArraySizeSelector from './TopBar/ArraySizeSelector';
+import AlgorithmSelector from './TopBar/AlgorithmSelector';
+import ArrayTypeSelector from './TopBar/ArrayTypeSelector';
+import SortingAlgorithms from './TopBar/SortingAlgorithms';
 
 class Strip {
     constructor(length = 10, color = 'rgb(25, 125, 51)') {
@@ -18,7 +18,7 @@ class App extends React.Component {
         this.state = {
             arraySize: 50,
             stripsArray: [],
-            sortingAlgorithm: BubbleSort,
+            sortingAlgorithm: SortingAlgorithms[0],
             arrayType: 'Random'
         };
     }

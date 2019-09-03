@@ -1,6 +1,6 @@
 import React from 'react';
 import './Dropdown.scss';
-import { SortingAlgorithms } from './SortingAlgorithms';
+import SortingAlgorithms from './SortingAlgorithms';
 
 const SortingOptions = SortingAlgorithms.map(algo => (
     <option value={algo.name}>{algo.name}</option>

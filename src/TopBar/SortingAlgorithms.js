@@ -47,4 +47,4 @@ const QuickSort = new Algorithm('Quick Sort', async (arr, swap) => {
 
 const SortingAlgorithms = [BubbleSort, QuickSort];
 
-module.exports = { BubbleSort, SortingAlgorithms };
+export default SortingAlgorithms;
