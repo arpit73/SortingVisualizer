@@ -1,15 +1,14 @@
 select {
-    background-color: #0563af;
-    color: white;
+    background-color: #ffffff;
+    color: #0c0b27;
     border: none;
     font-size: 1em;
-    margin: 2rem;
     -webkit-appearance: button;
     appearance: button;
     outline: none;
     cursor: pointer;
+    text-align: center;
 
-    option {
-        background-color: #0563af;
-    }
+    padding: 0.3rem;
+    // font-weight: 100;
 }

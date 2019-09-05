@@ -1,5 +1,8 @@
 import React from 'react';
+
+import './styles/globals.scss';
 import './App.scss';
+
 import ArraySizeSelector from './TopBar/ArraySizeSelector';
 import AlgorithmSelector from './TopBar/AlgorithmSelector';
 import ArrayTypeSelector from './TopBar/ArrayTypeSelector';
@@ -19,10 +22,11 @@ class App extends React.Component {
             arraySize: 50,
             stripsArray: [],
             sortingAlgorithm: SortingAlgorithms[0],
-            arrayType: 'Random'
+            arrayType: 'Random',
+            currentlySorting: false
         };
+        this.surfaceHeight = window.innerHeight / 1.5;
     }
-    surfaceHeight = 500; // px
 
     componentDidMount = () => {
         this.setState({
@@ -41,6 +45,12 @@ class App extends React.Component {
                 for (let i = 0; i < arraySize; i++) {
                     stripLengthArray.push(Math.ceil(Math.random() * maxValue));
                 }
+                // const shuffleArray = array => {
+                //     for (let i = array.length - 1; i > 0; i--) {
+                //         const j = Math.floor(Math.random() * (i + 1));
+                //         [array[i], array[j]] = [array[j], array[i]];
+                //     }
+                // };
                 break;
 
             case 'Almost Sorted':
@@ -92,21 +102,49 @@ class App extends React.Component {
     }
 
     swap = async (arr, i, j) => {
-        [arr[i], arr[j]] = [arr[j], arr[i]];
+        switch (this.state.currentlySorting) {
+            case true:
+                await this.sleep();
 
-        await this.sleep();
-        this.setState({
-            stripsArray: arr
-        });
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+
+                this.setState({
+                    stripsArray: arr
+                });
+                return true;
+
+            case false:
+                this.setState({
+                    stripsArray: this.generateStripsArray(
+                        this.state.arraySize,
+                        this.state.arrayType,
+                        this.surfaceHeight
+                    )
+                });
+                return false;
+
+            default:
+                break;
+        }
     };
 
-    runSort = (array, swapMethod) => {
+    runSort = async (array, swapMethod) => {
+        await this.setState({
+            currentlySorting: true
+        });
         this.state.sortingAlgorithm.method(array, swapMethod);
+    };
+
+    stopSort = () => {
+        this.setState({
+            currentlySorting: false
+        });
     };
 
     handleArraySizeSelector = arraySize => {
         this.setState({
             arraySize: arraySize,
+            currentlySorting: false,
             stripsArray: this.generateStripsArray(
                 arraySize,
                 this.state.arrayType,
@@ -117,13 +155,15 @@ class App extends React.Component {
 
     handleAlgorithmSelector = algorithm => {
         this.setState({
-            sortingAlgorithm: algorithm
+            sortingAlgorithm: algorithm,
+            currentlySorting: false
         });
     };
 
     handleArrayTypeSelector = arrayType => {
         this.setState({
             arrayType: arrayType,
+            currentlySorting: false,
             stripsArray: this.generateStripsArray(
                 this.state.arraySize,
                 arrayType,
@@ -134,12 +174,9 @@ class App extends React.Component {
 
     TopBar = () => {
         return (
-            <span>
-                <AlgorithmSelector
-                    onChangeHandler={this.handleAlgorithmSelector}
-                />
-
+            <span className="grid-container">
                 <ArraySizeSelector
+                    className="ArraySizeSelector"
                     min={10}
                     max={1000}
                     step={5}
@@ -147,17 +184,35 @@ class App extends React.Component {
                     onChangeHandler={this.handleArraySizeSelector}
                 />
 
-                <ArrayTypeSelector
-                    onChangeHandler={this.handleArrayTypeSelector}
-                />
+                <span className="grid-row">
+                    <AlgorithmSelector
+                        className="AlgorithmSelector"
+                        onChangeHandler={this.handleAlgorithmSelector}
+                    />
 
-                <button
-                    onClick={() =>
-                        this.runSort(this.state.stripsArray, this.swap)
-                    }
-                >
-                    Sort
-                </button>
+                    {this.state.currentlySorting ? (
+                        <button
+                            className="sortControl"
+                            onClick={() => this.stopSort()}
+                        >
+                            Stop Sorting
+                        </button>
+                    ) : (
+                        <button
+                            className="sortControl"
+                            onClick={() =>
+                                this.runSort(this.state.stripsArray, this.swap)
+                            }
+                        >
+                            Start Sorting
+                        </button>
+                    )}
+
+                    <ArrayTypeSelector
+                        className="ArrayTypeSelector"
+                        onChangeHandler={this.handleArrayTypeSelector}
+                    />
+                </span>
             </span>
         );
     };
@@ -180,7 +235,8 @@ class App extends React.Component {
 
     render() {
         const surfaceStyles = {
-            width: '80%',
+            width: '90%',
+            margin: '0.5rem auto',
             height: `${this.surfaceHeight}px`
         };
 

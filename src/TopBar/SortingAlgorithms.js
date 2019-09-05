@@ -6,8 +6,7 @@ class Algorithm {
 }
 
 const BubbleSort = new Algorithm('Bubble Sort', async (arr, swap) => {
-    let len = arr.length;
-    for (let i = len - 1; i >= 0; i--) {
+    firstLoop: for (let i = arr.length - 1; i >= 0; i--) {
         for (let j = 1; j <= i; j++) {
             let backup_1 = arr[j - 1].color;
             let backup_2 = arr[j].color;
@@ -16,7 +15,9 @@ const BubbleSort = new Algorithm('Bubble Sort', async (arr, swap) => {
             arr[j].color = 'red';
 
             if (arr[j - 1].length > arr[j].length) {
-                await swap(arr, j - 1, j);
+                if (!(await swap(arr, j - 1, j))) {
+                    break firstLoop;
+                }
             }
 
             arr[j - 1].color = backup_1;

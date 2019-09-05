@@ -1,7 +1,7 @@
 body {
     width: 100%;
     height: 100%;
-    background-color: rgb(255, 114, 114);
+    background-color: #0c0b27;
 }
 
 .surface {
@@ -9,6 +9,63 @@ body {
     flex-direction: row;
     align-items: flex-start;
 }
+
+.grid-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+
+    width: 80%;
+    margin: 2rem auto 0 auto;
+
+    // .ArraySizeSelector {
+    // }
+
+    .grid-row {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr 1fr;
+        grid-template-rows: 1fr;
+        grid-template-areas: 'AlgorithmSelector sortControl ArrayTypeSelector';
+        grid-gap: 0.5rem;
+        // display: flex;
+        // flex-direction: row;
+
+        .AlgorithmSelector {
+            grid-area: AlgorithmSelector;
+        }
+
+        .sortControl {
+            grid-area: sortControl;
+
+            background-color: #ffffff;
+            color: #0c0b27;
+            border: none;
+            font-size: 1em;
+            -webkit-appearance: button;
+            outline: none;
+            cursor: pointer;
+            padding: 0.3rem;
+
+            // font-family: 'Press Start 2P', cursive;
+        }
+
+        .ArrayTypeSelector {
+            grid-area: ArrayTypeSelector;
+        }
+    }
+}
+
+// #topbar {
+//     display: flex;
+//     flex-direction: row;
+//     flex-wrap: wrap;
+//     justify-content: center;
+
+//     #ArraySizeSelector {
+//         flex-grow: 1;
+//         flex-shrink: 1;
+//     }
+// }
 
 .strip {
     flex-grow: 1;
