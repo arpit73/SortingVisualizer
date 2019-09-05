@@ -19,13 +19,13 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            arraySize: 50,
+            arraySize: 100,
             stripsArray: [],
             sortingAlgorithm: SortingAlgorithms[0],
             arrayType: 'Random',
             currentlySorting: false
         };
-        this.surfaceHeight = window.innerHeight / 1.5;
+        this.surfaceHeight = window.innerHeight / 1.3;
     }
 
     componentDidMount = () => {
@@ -40,17 +40,12 @@ class App extends React.Component {
 
     generateStripsArray = (arraySize, arrayType, maxValue) => {
         let stripLengthArray = [];
+
         switch (arrayType) {
             case 'Random':
                 for (let i = 0; i < arraySize; i++) {
                     stripLengthArray.push(Math.ceil(Math.random() * maxValue));
                 }
-                // const shuffleArray = array => {
-                //     for (let i = array.length - 1; i > 0; i--) {
-                //         const j = Math.floor(Math.random() * (i + 1));
-                //         [array[i], array[j]] = [array[j], array[i]];
-                //     }
-                // };
                 break;
 
             case 'Almost Sorted':
@@ -58,9 +53,16 @@ class App extends React.Component {
                 for (let val = 10; val <= maxValue; val += increment) {
                     stripLengthArray.push(Math.floor(val));
                 }
-                [stripLengthArray[2], stripLengthArray[arraySize - 3]] = [
-                    stripLengthArray[arraySize - 3],
-                    stripLengthArray[2]
+
+                let firstIndex = 2,
+                    secondIndex = arraySize - 3;
+
+                [
+                    stripLengthArray[firstIndex],
+                    stripLengthArray[secondIndex]
+                ] = [
+                    stripLengthArray[secondIndex],
+                    stripLengthArray[firstIndex]
                 ];
                 break;
 
@@ -104,7 +106,7 @@ class App extends React.Component {
     swap = async (arr, i, j) => {
         switch (this.state.currentlySorting) {
             case true:
-                await this.sleep();
+                await this.sleep(50);
 
                 [arr[i], arr[j]] = [arr[j], arr[i]];
 
@@ -178,7 +180,7 @@ class App extends React.Component {
                 <ArraySizeSelector
                     className="ArraySizeSelector"
                     min={10}
-                    max={1000}
+                    max={700}
                     step={5}
                     defaultValue={this.state.arraySize}
                     onChangeHandler={this.handleArraySizeSelector}
@@ -233,17 +235,21 @@ class App extends React.Component {
         });
     };
 
-    render() {
-        const surfaceStyles = {
-            width: '90%',
-            margin: '0.5rem auto',
-            height: `${this.surfaceHeight}px`
-        };
+    surfaceStyles = {
+        width: '90%',
+        margin: '0.5rem auto',
+        height: `${this.surfaceHeight}px`
+    };
 
+    render() {
         return (
             <div>
                 <this.TopBar />
-                <span className="surface" ref="surface" style={surfaceStyles}>
+                <span
+                    className="surface"
+                    ref="surface"
+                    style={this.surfaceStyles}
+                >
                     <this.Strips />
                 </span>
             </div>

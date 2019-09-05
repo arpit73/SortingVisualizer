@@ -1,34 +1,98 @@
-array = [1, 2, 1, 5, 6, 322, 4, 5, -9, -56, -1, 2, 24, 4, 5, 6];
-array_sorted = array.sort((a, b) => {
+array = [
+    -99,
+    1,
+    2,
+    -2,
+    -9,
+    1,
+    -1,
+    5,
+    6,
+    -999,
+    999,
+    322,
+    4,
+    5,
+    -9,
+    -56,
+    2,
+    24,
+    4,
+    0,
+    5,
+    6
+];
+array_second = [
+    -99,
+    1,
+    2,
+    -2,
+    -9,
+    1,
+    5,
+    6,
+    -999,
+    999,
+    322,
+    4,
+    5,
+    -9,
+    -56,
+    -1,
+    2,
+    24,
+    4,
+    0,
+    5,
+    6
+];
+
+array_sorted = array_second.sort((a, b) => {
     return a - b;
 });
 
-// bubbleSort = array => {
-//     let size = array.length;
-//     for (let i = 0; i < size; i++) {
-//         for (let j = i + 1; j < size; j++) {
-//             if (array[i] > array[j]) {
-//                 let temp = array[j];
-//                 array[j] = array[i];
-//                 array[i] = temp;
-//             }
-//         }
-//     }
-//     return array;
-// };
+const swap = (arr, left, right) => {
+    [arr[left], arr[right]] = [arr[right], arr[left]];
+};
 
-function bubbleSort(arr) {
-    let len = arr.length;
-    for (let i = len - 1; i >= 0; i--) {
-        for (let j = 1; j <= i; j++) {
-            if (arr[j - 1] > arr[j]) {
-                let temp = arr[j - 1];
-                arr[j - 1] = arr[j];
-                arr[j] = temp;
-            }
+const partition = (arr, left, right, swap) => {
+    let pivotIndex = Math.floor((right + left) / 2);
+    let pivot = arr[pivotIndex];
+
+    while (left <= right) {
+        while (arr[left] < pivot) {
+            left += 1;
+        }
+        while (arr[right] > pivot) {
+            right -= 1;
+        }
+
+        if (left <= right) {
+            swap(arr, left, right);
+
+            left += 1;
+            right -= 1;
         }
     }
-    return arr;
-}
 
-console.log(array_sorted == bubbleSort(array));
+    return left;
+};
+
+const quickSort = (arr, left, right, swap) => {
+    let pivot = partition(arr, left, right, swap);
+
+    if (left < pivot - 1) {
+        quickSort(arr, left, pivot - 1, swap);
+    }
+    if (right > pivot) {
+        quickSort(arr, pivot, right, swap);
+    }
+};
+
+// console.log(array);
+quickSort(array, 0, array.length - 1, swap);
+let is_same = array_sorted.every((element, index) => element === array[index]);
+console.log(is_same);
+
+console.table(array_sorted);
+console.table(array);
