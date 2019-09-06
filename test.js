@@ -136,6 +136,18 @@ const mergeSort = array => {
         }
     }
 };
+const selectionSort = array => {
+    for (var i = 0; i < array.length; i++) {
+        //set min to the current iteration of i
+        var min = i;
+        for (var j = i + 1; j < array.length; j++) {
+            if (array[j] < array[min]) {
+                min = j;
+            }
+        }
+        swap(array, i, min);
+    }
+};
 
 // console.log(array);
 // quickSort(array, 0, array.length - 1, swap);

@@ -115,6 +115,59 @@ const MergeSort = new Algorithm(
     }
 );
 
-const SortingAlgorithms = [BubbleSort, QuickSort, MergeSort];
+const SelectionSort = new Algorithm(
+    'Selection Sort',
+    async (array, Swap, Continue, Update) => {
+        firstLoop: for (let i = 0; i < array.length; i++) {
+            //set min to the current iteration of i
+            let min = i;
+            for (let j = i + 1; j < array.length; j++) {
+                if (array[j].length < array[min].length) {
+                    min = j;
+                }
+                if (!Continue()) {
+                    break firstLoop;
+                }
+            }
+            await Swap(array, i, min);
+        }
+    }
+);
+const InsertionSort = new Algorithm(
+    'Insertion Sort',
+    async (arr, Swap, Continue, Update) => {
+        firstLoop: for (let i = 0; i < arr.length; i++) {
+            let el = arr[i];
+            let j = i - 1;
+            if (!Continue()) {
+                break;
+            }
+
+            while (j >= 0 && arr[j].length > el.length) {
+                arr[j + 1] = arr[j];
+                
+                arr[j + 1].color = 'red';
+                await Update(arr);
+                arr[j + 1].color = 'white';
+
+                if (!Continue()) {
+                    break firstLoop;
+                }
+
+                j -= 1;
+            }
+            arr[j + 1] = el;
+            await Update(arr);
+        }
+    }
+);
+
+const SortingAlgorithms = [
+    BubbleSort,
+    SelectionSort,
+    InsertionSort,
+    QuickSort,
+    MergeSort
+];
 
 export default SortingAlgorithms;
