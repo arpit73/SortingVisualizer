@@ -103,55 +103,60 @@ class App extends React.Component {
         });
     }
 
-    swap = async (arr, i, j) => {
-        switch (this.state.currentlySorting) {
-            case true:
-                arr[i].color = 'red';
-                arr[j].color = 'red';
+    Swap = async (arr, i, j) => {
+        if (this.state.currentlySorting) {
+            arr[i].color = 'red';
+            arr[j].color = 'red';
 
-                for (let k = i + 1; k < j; k++) {
-                    arr[k].color = 'pink';
-                }
+            for (let k = i + 1; k < j; k++) {
+                arr[k].color = 'pink';
+            }
 
-                [arr[i], arr[j]] = [arr[j], arr[i]];
+            [arr[i], arr[j]] = [arr[j], arr[i]];
 
-                this.setState({
-                    stripsArray: arr
-                });
+            this.setState({
+                stripsArray: arr
+            });
 
-                for (let k = i; k <= j; k++) {
-                    arr[k].color = 'white';
-                }
+            for (let k = i; k <= j; k++) {
+                arr[k].color = 'white';
+            }
 
-                await this.sleep();
-
-                return true;
-
-            case false:
-                this.setState({
-                    stripsArray: this.generateStripsArray(
-                        this.state.arraySize,
-                        this.state.arrayType,
-                        this.surfaceHeight
-                    )
-                });
-                return false;
-
-            default:
-                break;
+            await this.sleep();
         }
     };
 
-    runSort = async (array, swapMethod) => {
+    Update = async array => {
+        if (this.state.currentlySorting) {
+            this.setState({
+                stripsArray: array
+            });
+            await this.sleep();
+        }
+    };
+
+    Continue = () => this.state.currentlySorting;
+
+    runSort = async (array, swapMethod, checkContinue, Update) => {
         await this.setState({
             currentlySorting: true
         });
-        this.state.sortingAlgorithm.method(array, swapMethod);
+        this.state.sortingAlgorithm.method(
+            array,
+            swapMethod,
+            checkContinue,
+            Update
+        );
     };
 
     stopSort = () => {
         this.setState({
-            currentlySorting: false
+            currentlySorting: false,
+            stripsArray: this.generateStripsArray(
+                this.state.arraySize,
+                this.state.arrayType,
+                this.surfaceHeight
+            )
         });
     };
 
@@ -215,7 +220,12 @@ class App extends React.Component {
                         <button
                             className="sortControl"
                             onClick={() =>
-                                this.runSort(this.state.stripsArray, this.swap)
+                                this.runSort(
+                                    this.state.stripsArray,
+                                    this.Swap,
+                                    this.Continue,
+                                    this.Update
+                                )
                             }
                         >
                             Start Sorting

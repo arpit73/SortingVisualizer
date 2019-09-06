@@ -99,8 +99,47 @@ const quickSort = (arr, left, right, swap) => {
     }
 };
 
+const mergeSort = array => {
+    if (array.length > 1) {
+        let mid = Math.floor(array.length / 2),
+            leftHalf = array.slice(0, mid),
+            rightHalf = array.slice(mid, array.length);
+
+        mergeSort(leftHalf);
+        mergeSort(rightHalf);
+
+        let i = 0,
+            j = 0,
+            k = 0;
+
+        while (i < leftHalf.length && j < rightHalf.length) {
+            if (leftHalf[i] <= rightHalf[j]) {
+                array[k] = leftHalf[i];
+                i += 1;
+            } else {
+                array[k] = rightHalf[j];
+                j += 1;
+            }
+            k += 1;
+        }
+
+        while (i < leftHalf.length) {
+            array[k] = leftHalf[i];
+            i += 1;
+            k += 1;
+        }
+
+        while (j < rightHalf.length) {
+            array[k] = rightHalf[j];
+            j += 1;
+            k += 1;
+        }
+    }
+};
+
 // console.log(array);
-quickSort(array, 0, array.length - 1, swap);
+// quickSort(array, 0, array.length - 1, swap);
+mergeSort(array);
 let is_same = array_sorted.every((element, index) => element === array[index]);
 console.log(is_same);
 
