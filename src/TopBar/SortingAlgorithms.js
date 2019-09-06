@@ -8,65 +8,40 @@ class Algorithm {
 const BubbleSort = new Algorithm('Bubble Sort', async (arr, swap) => {
     firstLoop: for (let i = arr.length - 1; i >= 0; i--) {
         for (let j = 1; j <= i; j++) {
-            let backup_1 = arr[j - 1].color;
-            let backup_2 = arr[j].color;
-
-            arr[j - 1].color = 'red';
-            arr[j].color = 'red';
-
             if (arr[j - 1].length > arr[j].length) {
                 if (!(await swap(arr, j - 1, j))) {
                     break firstLoop;
                 }
             }
-
-            arr[j - 1].color = backup_1;
-            arr[j].color = backup_2;
         }
     }
 });
 
 const partition = async (arr, left, right, swap) => {
-    let pivotIndex = Math.floor((right + left) / 2);
-    let pivot = arr[pivotIndex];
-
-    while (left <= right) {
-        while (arr[left].length < pivot.length) {
-            left += 1;
-        }
-        while (arr[right].length > pivot.length) {
-            right -= 1;
-        }
-
-        if (left <= right) {
-            arr[left].color = 'red';
-            arr[right].color = 'red';
-
-            await swap(arr, left, right);
-
-            arr[left].color = 'white';
-            arr[right].color = 'white';
-
-            left += 1;
-            right -= 1;
+    let pivot = arr[right];
+    let i = left - 1;
+    for (let j = left; j < right; j++) {
+        if (arr[j].length < pivot.length) {
+            i += 1;
+            await swap(arr, i, j);
         }
     }
-
-    return left;
+    await swap(arr, i + 1, right);
+    return i + 1;
 };
 
 const quickSort = async (arr, left, right, swap) => {
-    let pivot = await partition(arr, left, right, swap);
-
-    if (left < pivot - 1) {
-        await quickSort(arr, left, pivot - 1, swap);
-    }
-    if (right > pivot) {
-        await quickSort(arr, pivot, right, swap);
+    if (left < right) {
+        partition(arr, left, right, swap).then(pivot => {
+            Promise.all([
+                quickSort(arr, left, pivot - 1, swap),
+                quickSort(arr, pivot + 1, right, swap)
+            ]);
+        });
     }
 };
 
-const QuickSort = new Algorithm('Quick Sort', (arr, swap) => {
+const QuickSort = new Algorithm('Quick Sort', async (arr, swap) => {
     quickSort(arr, 0, arr.length - 1, swap);
 });
 

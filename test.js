@@ -55,37 +55,47 @@ const swap = (arr, left, right) => {
     [arr[left], arr[right]] = [arr[right], arr[left]];
 };
 
-const partition = (arr, left, right, swap) => {
-    let pivotIndex = Math.floor((right + left) / 2);
-    let pivot = arr[pivotIndex];
+// const partition = (arr, left, right, swap) => {
+//     let pivotIndex = Math.floor((right + left) / 2);
+//     let pivot = arr[pivotIndex];
 
-    while (left <= right) {
-        while (arr[left] < pivot) {
-            left += 1;
-        }
-        while (arr[right] > pivot) {
-            right -= 1;
-        }
+//     while (left <= right) {
+//         while (arr[left] < pivot) {
+//             left += 1;
+//         }
+//         while (arr[right] > pivot) {
+//             right -= 1;
+//         }
 
-        if (left <= right) {
-            swap(arr, left, right);
+//         if (left <= right) {
+//             swap(arr, left, right);
 
-            left += 1;
-            right -= 1;
+//             left += 1;
+//             right -= 1;
+//         }
+//     }
+
+//     return left;
+// };
+const partition = async (arr, left, right, swap) => {
+    let pivot = arr[right];
+    let i = left - 1;
+    for (let j = left; j < right; j++) {
+        if (arr[j].length < pivot.length) {
+            i += 1;
+            await swap(arr, i, j);
         }
     }
-
-    return left;
+    await swap(arr, i + 1, right);
+    return i + 1;
 };
 
 const quickSort = (arr, left, right, swap) => {
-    let pivot = partition(arr, left, right, swap);
+    if (left < right) {
+        let pivot = partition(arr, left, right, swap);
 
-    if (left < pivot - 1) {
         quickSort(arr, left, pivot - 1, swap);
-    }
-    if (right > pivot) {
-        quickSort(arr, pivot, right, swap);
+        quickSort(arr, pivot + 1, right, swap);
     }
 };
 

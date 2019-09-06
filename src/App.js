@@ -106,13 +106,25 @@ class App extends React.Component {
     swap = async (arr, i, j) => {
         switch (this.state.currentlySorting) {
             case true:
-                await this.sleep(50);
+                arr[i].color = 'red';
+                arr[j].color = 'red';
+
+                for (let k = i + 1; k < j; k++) {
+                    arr[k].color = 'pink';
+                }
 
                 [arr[i], arr[j]] = [arr[j], arr[i]];
 
                 this.setState({
                     stripsArray: arr
                 });
+
+                for (let k = i; k <= j; k++) {
+                    arr[k].color = 'white';
+                }
+
+                await this.sleep();
+
                 return true;
 
             case false:
